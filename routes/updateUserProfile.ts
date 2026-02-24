@@ -20,6 +20,14 @@ export function updateUserProfile () {
       return
     }
 
+    // CSRF Mitigation: Validate token (Double Submit Cookie Pattern)
+    // Assumes a '_csrf' cookie is set by the server on a preceding GET request
+    // and the client submits its value in the 'X-CSRF-Token' header for POST requests.
+    if (!req.cookies._csrf || req.cookies._csrf !== req.headers['x-csrf-token']) {
+      next(new Error('Invalid or missing CSRF token'))
+      return
+    }
+
     try {
       const user = await UserModel.findByPk(loggedInUser.data.id)
       if (!user) {
