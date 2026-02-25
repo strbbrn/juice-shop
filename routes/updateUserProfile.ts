@@ -33,6 +33,12 @@ export function updateUserProfile () {
           req.body.username !== user.username
       })
 
+      // Validate CSRF token (double submit cookie)
+      if (!req.body.csrfToken || req.body.csrfToken !== req.cookies.csrfToken) {
+        next(new Error('Blocked illegal activity by ' + req.socket.remoteAddress))
+        return
+      }
+
       const savedUser = await user.update({ username: req.body.username })
       const userWithStatus = utils.queryResultToJson(savedUser)
       const updatedToken = security.authorize(userWithStatus)
