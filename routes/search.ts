@@ -62,8 +62,8 @@ export function searchProducts () {
           })
         } // vuln-code-snippet hide-end
         for (let i = 0; i < products.length; i++) {
-          products[i].name = req.__(products[i].name)
-          products[i].description = req.__(products[i].description)
+          products[i].name = String(req.__(products[i].name)).replace(/[&<>"'\/] /g, (s) => ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": ''', '/': '/' } as any)[s])
+          products[i].description = String(req.__(products[i].description)).replace(/[&<>"'\/] /g, (s) => ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": ''', '/': '/' } as any)[s])
         }
         res.json(utils.queryResultToJson(products))
       }).catch((error: ErrorWithParent) => {
