@@ -35,6 +35,7 @@ export function login () {
       .then((authenticatedUser) => { // vuln-code-snippet neutral-line loginAdminChallenge loginBenderChallenge loginJimChallenge
         const user = utils.queryResultToJson(authenticatedUser)
         if (user.data?.id && user.data.totpSecret !== '') {
+          console.log("hello");
           res.status(401).json({
             status: 'totp_token_required',
             data: {
